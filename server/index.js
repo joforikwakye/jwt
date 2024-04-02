@@ -1,16 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const corsOptions = require('./config/corsOptions')
 var jwt = require("jsonwebtoken");
 const Student = require("./models/student");
 const cookieParser = require("cookie-parser");
 
 
 const app = express();
-var corsOptions = {
-  origin: "http://localhost:5173",
-  credentials: true,
-};
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -25,34 +22,9 @@ mongoose
   .catch((err) => console.log(err));
 
 
-
-app.post("/register", (req, res) => {
-  const { name, email, password } = req.body;
-  Student.create({ name, email, password })
-    .then((user) => res.json(user))
-    .catch((err) => res.json(err));
-});
-
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  Student.findOne({ email })
-    .then((user) => {
-      if (user) {
-        if (user.password === password) {
-          const accessToken = jwt.sign({  email },"jwt-access-token-secret-key",{ expiresIn: "1m" });
-          const refreshToken = jwt.sign({ email: email },"jwt-refresh-token-secret-key", {expiresIn: "5m" });
-
-          res.cookie("accessToken", accessToken, { maxAge: 60000 });
-
-          res.cookie("refreshToken", refreshToken, {maxAge: 300000,httpOnly: true,secure: true,sameSite: "strict",});
-          return res.json({ Login: true });
-        }
-      } else {
-        res.json({ Login: false, Message: "no record" });
-      }
-    })
-    .catch((err) => res.json(err));
-});
+//routes
+app.use('/register', require('./routes/register'))
+app.use('/login', require('./routes/login'))
 
 //middleware checking the existence of token
 const verifyUser = (req, res, next) => {
