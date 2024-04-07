@@ -1,17 +1,21 @@
-const User = require('../models/User')
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-const handleLogin = (req, res) => {
-    const {email, pwd} = req.body
-    if(!email || !pwd) return res.status(400).json({"error": "email and password fields are required"})
+const handleLogin = async (req, res) => {
+  const { email, pwd } = req.body;
+  if (!email || !pwd)
+    return res
+      .status(400)
+      .json({ message: "email and password are required." });
+  const foundUser = await User.findOne({ email: email }).exec();
+  if (!foundUser) return res.sendStatus(401); //Unauthorized
+  // evaluate password
+  const match = await bcrypt.compare(pwd, foundUser.password);
+  if (match) {
+    res.status(200).json({ message: "login succesful" });
+  } else {
+    res.sendStatus(401);
+  }
+};
 
-    const foundUser = User.findOne({email: email}).exec()
-    if(!foundUser) return res.status(401).json({"error": "user not found"})
-
-    const match = bcrypt.compare(pwd, foundUser.pwd)
-    if(match) {
-        res.status(200).json({"message": "login successful"})
-    }
-}
-
-module.exports = {handleLogin}
+module.exports = { handleLogin };

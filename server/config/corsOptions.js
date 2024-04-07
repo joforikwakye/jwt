@@ -1,6 +1,4 @@
-const whitelist = [
-    'http://localhost:3000'
-]
+const whitelist = ["http://localhost:3000", "102.176.94.212"];
 
 const corsOptions = {
   origin: function (origin, callback) {
