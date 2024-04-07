@@ -3,14 +3,13 @@ const whitelist = [
 ]
 
 const corsOptions = {
-    origin: function(origin, callback) {
-        if(whitelist.indexOf(origin) !== -1 || !origin) {
-            callback(null, true)
-        } else {
-            callback(new Error('not allowed'))
-        }
-    },
-    optionsSuccessStatus: 200
-}
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 
-module.exports = corsOptions
+module.exports = {corsOptions}
