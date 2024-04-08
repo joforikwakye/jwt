@@ -20,6 +20,7 @@ app.use(cookieParser())
 //routes
 app.use('/register', require('./routes/register'))
 app.use('/login', require('./routes/login'))
+app.use('/logout', require('./routes/logout'))
 
 mongoose.connection.once('open', () => {
     console.log('database connected')
