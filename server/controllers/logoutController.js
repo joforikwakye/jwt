@@ -2,6 +2,7 @@ const User = require("../models/User");
 
 const handleLogout = async (req, res) => {
   const cookies = req.cookies;
+  //res.json({ message: "from logout backend" });
   if (!cookies?.jwt) return res.sendStatus(204);
 
   const refreshToken = cookies.jwt;
@@ -9,7 +10,7 @@ const handleLogout = async (req, res) => {
 
   foundUser.refreshToken = "";
   const result = foundUser.save();
-  console.log(result);
+  res.json(result);
 
   res.clearCookie("jwt", refreshToken, {
     httpOnly: true,
